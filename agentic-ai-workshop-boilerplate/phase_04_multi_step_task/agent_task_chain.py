@@ -22,6 +22,14 @@ you'll use in your track project to process a whole list of drone reports
 / login attempts / a multi-agent conversation, not just one item.
 """
 
+import sys
+
+# Windows terminals default to a legacy codepage (cp1252) that can't print
+# a lot of Unicode the model might return in its answers (smart quotes,
+# em dashes, narrow spaces, etc.) and will crash with UnicodeEncodeError
+# the moment it tries. Force UTF-8 output so that never happens, on any OS.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import os
 
 from dotenv import load_dotenv
@@ -69,7 +77,7 @@ def record_finding(reading: str, verdict: str) -> str:
 
 
 llm = ChatGroq(
-    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
 )
 
@@ -92,13 +100,13 @@ def run_agent_until_done(goal: str, max_iterations: int = 10) -> str:
 
         # No tool calls this round => the model believes it's done.
         if not ai_message.tool_calls:
-            print(f"✅ Agent finished: {ai_message.content}")
+            print(f"Agent finished: {ai_message.content}")
             return ai_message.content
 
         for tool_call in ai_message.tool_calls:
             tool_name = tool_call["name"]
             tool_args = tool_call["args"]
-            print(f"🔧 {tool_name}({tool_args})")
+            print(f"{tool_name}({tool_args})")
 
             selected_tool = tools_by_name[tool_name]
             result = selected_tool.invoke(tool_args)
@@ -111,7 +119,7 @@ def run_agent_until_done(goal: str, max_iterations: int = 10) -> str:
     # Safety net: if we get here, the model never stopped asking for
     # tools within our budget. This should be rare with a clear goal
     # prompt, but it's why max_iterations exists.
-    print("⚠️  Hit max_iterations without the agent declaring itself done.")
+    print("WARNING: Hit max_iterations without the agent declaring itself done.")
     return "Stopped early: max_iterations reached."
 
 

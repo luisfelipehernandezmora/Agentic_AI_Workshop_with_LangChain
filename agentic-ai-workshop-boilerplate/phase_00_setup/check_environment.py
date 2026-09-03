@@ -21,6 +21,14 @@ Nothing here needs editing. If everything prints PASS, move on to
 phase_01_first_agent.
 """
 
+import sys
+
+# Windows terminals default to a legacy codepage (cp1252) that can't print
+# a lot of Unicode the model might return in its answers (smart quotes,
+# em dashes, narrow spaces, etc.) and will crash with UnicodeEncodeError
+# the moment it tries. Force UTF-8 output so that never happens, on any OS.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import os
 import sys
 
@@ -89,7 +97,7 @@ def check_key_actually_works() -> bool:
     from groq import Groq
 
     api_key = _os.getenv("GROQ_API_KEY")
-    model = _os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    model = _os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
 
     client = Groq(api_key=api_key)
 

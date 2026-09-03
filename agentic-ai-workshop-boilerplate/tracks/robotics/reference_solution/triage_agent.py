@@ -13,6 +13,14 @@ Includes the stretch goal: a second agent drafts a short radio message
 back to the field team for the single highest-priority report.
 """
 
+import sys
+
+# Windows terminals default to a legacy codepage (cp1252) that can't print
+# a lot of Unicode the model might return in its answers (smart quotes,
+# em dashes, narrow spaces, etc.) and will crash with UnicodeEncodeError
+# the moment it tries. Force UTF-8 output so that never happens, on any OS.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import os
 
 from dotenv import load_dotenv
@@ -70,7 +78,7 @@ def add_to_dispatch_list(report: str, priority_score: int, action: str, reasonin
 tools = [get_next_report, add_to_dispatch_list]
 
 llm = ChatGroq(
-    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
 )
 llm_with_tools = llm.bind_tools(tools)

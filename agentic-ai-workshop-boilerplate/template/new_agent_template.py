@@ -23,6 +23,14 @@ HOW TO USE THIS FILE
    bottom never needs to change.
 """
 
+import sys
+
+# Windows terminals default to a legacy codepage (cp1252) that can't print
+# a lot of Unicode the model might return in its answers (smart quotes,
+# em dashes, narrow spaces, etc.) and will crash with UnicodeEncodeError
+# the moment it tries. Force UTF-8 output so that never happens, on any OS.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import os
 
 from dotenv import load_dotenv
@@ -83,7 +91,7 @@ tools = [example_tool]
 # Agent setup -- you normally don't need to change this part.
 # =========================================================================
 llm = ChatGroq(
-    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
 )
 llm_with_tools = llm.bind_tools(tools)
@@ -111,13 +119,13 @@ def run_agent_until_done(goal: str, max_iterations: int = 10) -> str:
         messages.append(ai_message)
 
         if not ai_message.tool_calls:
-            print(f"✅ Agent finished: {ai_message.content}")
+            print(f"Agent finished: {ai_message.content}")
             return ai_message.content
 
         for tool_call in ai_message.tool_calls:
             tool_name = tool_call["name"]
             tool_args = tool_call["args"]
-            print(f"🔧 {tool_name}({tool_args})")
+            print(f"{tool_name}({tool_args})")
 
             selected_tool = tools_by_name[tool_name]
             result = selected_tool.invoke(tool_args)
@@ -127,7 +135,7 @@ def run_agent_until_done(goal: str, max_iterations: int = 10) -> str:
                 ToolMessage(content=str(result), tool_call_id=tool_call["id"])
             )
 
-    print("⚠️  Hit max_iterations without the agent declaring itself done.")
+    print("WARNING: Hit max_iterations without the agent declaring itself done.")
     return "Stopped early: max_iterations reached."
 
 

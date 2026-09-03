@@ -31,11 +31,19 @@ GROQ-SPECIFIC NOTES (things that differ from a generic LangChain tutorial)
 - `ChatGroq` automatically reads the `GROQ_API_KEY` environment variable,
   same as how OpenAI's class reads `OPENAI_API_KEY`. You never type your
   key into code.
-- The `model` name is Groq-specific (e.g. "llama-3.3-70b-versatile"), not
+- The `model` name is Groq-specific (e.g. "qwen/qwen3.8-27b"), not
   an OpenAI model name like "gpt-4o". Not every model Groq hosts supports
   tool-calling -- if you swap models and tools stop being called, that's
   the first thing to check. See https://console.groq.com/docs/models
 """
+
+import sys
+
+# Windows terminals default to a legacy codepage (cp1252) that can't print
+# a lot of Unicode the model might return in its answers (smart quotes,
+# em dashes, narrow spaces, etc.) and will crash with UnicodeEncodeError
+# the moment it tries. Force UTF-8 output so that never happens, on any OS.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import os
 
@@ -69,7 +77,7 @@ def get_word_count(text: str) -> int:
 # tools it's allowed to ask for ("the agentic layer" starts here).
 # -----------------------------------------------------------------------
 llm = ChatGroq(
-    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,  # 0 = consistent/predictable answers, good for demos and debugging
 )
 
@@ -90,7 +98,7 @@ def run_agent(user_input: str) -> str:
     messages = [HumanMessage(content=user_input)]
 
     # STEP 3: Ask the LLM what it wants to do.
-    print(f"\n🧠 Thinking about: \"{user_input}\"")
+    print(f"\nThinking about: \"{user_input}\"")
     ai_message = llm_with_tools.invoke(messages)
     messages.append(ai_message)
 
@@ -102,7 +110,7 @@ def run_agent(user_input: str) -> str:
         for tool_call in ai_message.tool_calls:
             tool_name = tool_call["name"]
             tool_args = tool_call["args"]
-            print(f"🔧 Calling tool: {tool_name}({tool_args})")
+            print(f"Calling tool: {tool_name}({tool_args})")
 
             # WE run the actual Python function here -- the LLM never
             # executes code itself, it only requests it.
@@ -118,11 +126,11 @@ def run_agent(user_input: str) -> str:
 
         # STEP 5: Ask the LLM again, now that it has the tool result.
         final_message = llm_with_tools.invoke(messages)
-        print(f"✅ Final answer: {final_message.content}")
+        print(f"Final answer: {final_message.content}")
         return final_message.content
 
     # No tool was needed -- the LLM's first response IS the final answer.
-    print(f"✅ Final answer: {ai_message.content}")
+    print(f"Final answer: {ai_message.content}")
     return ai_message.content
 
 

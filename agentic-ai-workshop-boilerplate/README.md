@@ -85,7 +85,7 @@ in `.env` (not `.env.example`).
 **"The model '...' isn't available" / "decommissioned"**
 Groq retires older models faster than most providers. Check the current
 list at https://console.groq.com/docs/models and update `GROQ_MODEL` in
-your `.env`. `llama-3.3-70b-versatile` is the default this workshop is
+your `.env`. `qwen/qwen3.8-27b` is the default this workshop is
 built against.
 
 **"Groq says you're rate-limited (429)"**

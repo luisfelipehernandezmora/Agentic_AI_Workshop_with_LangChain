@@ -21,6 +21,14 @@ Everything else (the tool-calling loop) is copy-pasted from phase_02
 unchanged. Memory and tool-use are independent features that stack.
 """
 
+import sys
+
+# Windows terminals default to a legacy codepage (cp1252) that can't print
+# a lot of Unicode the model might return in its answers (smart quotes,
+# em dashes, narrow spaces, etc.) and will crash with UnicodeEncodeError
+# the moment it tries. Force UTF-8 output so that never happens, on any OS.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 import os
 
 from dotenv import load_dotenv
@@ -38,7 +46,7 @@ def get_word_count(text: str) -> int:
 
 
 llm = ChatGroq(
-    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
 )
 
@@ -60,7 +68,7 @@ conversation_history = []
 
 
 def run_agent(user_input: str) -> str:
-    print(f"\n🧠 You said: \"{user_input}\"")
+    print(f"\nYou said: \"{user_input}\"")
 
     # Append to the SHARED list instead of creating a new one.
     conversation_history.append(HumanMessage(content=user_input))
@@ -72,7 +80,7 @@ def run_agent(user_input: str) -> str:
         for tool_call in ai_message.tool_calls:
             tool_name = tool_call["name"]
             tool_args = tool_call["args"]
-            print(f"🔧 Calling tool: {tool_name}({tool_args})")
+            print(f"Calling tool: {tool_name}({tool_args})")
 
             selected_tool = tools_by_name[tool_name]
             result = selected_tool.invoke(tool_args)
@@ -84,10 +92,10 @@ def run_agent(user_input: str) -> str:
 
         final_message = llm_with_tools.invoke(conversation_history)
         conversation_history.append(final_message)
-        print(f"✅ Agent: {final_message.content}")
+        print(f"Agent: {final_message.content}")
         return final_message.content
 
-    print(f"✅ Agent: {ai_message.content}")
+    print(f"Agent: {ai_message.content}")
     return ai_message.content
 
 
