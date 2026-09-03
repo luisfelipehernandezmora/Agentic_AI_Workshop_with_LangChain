@@ -1,0 +1,8 @@
+# Core LangChain + Groq stack for the workshop.
+# Pin loosely (>=) so pip can resolve compatible sub-dependencies on any laptop/OS.
+
+langchain>=0.3.0
+langchain-groq>=0.2.0
+langchain-core>=0.3.0
+groq>=0.11.0
+python-dotenv>=1.0.0
