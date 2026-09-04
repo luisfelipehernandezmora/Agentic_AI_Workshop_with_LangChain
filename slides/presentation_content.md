@@ -9,9 +9,10 @@ Once approved, this gets built into the actual .pptx with the pptx skill. Nothin
 Format per slide: **On-slide content** (what's visually on the slide) then *Speaker notes* (what you say —
 not meant to be printed on the slide itself).
 
-Note on scope: this expands the original 14-slide outline to 19 slides, to fold in a dedicated LangChain
-basics section, a granular phase-by-phase code walkthrough (phases 0→4), and a closing "meta" slide (below).
-Confirmed OK to run past 30 minutes for this — it's a teaching session, not a timed pitch.
+Note on scope: this expands the original 14-slide outline to 21 slides, to fold in a dedicated LangChain
+basics section, a granular phase-by-phase code walkthrough (phases 0→4), a closing "meta" slide, and a
+real-world workflow section (below). Confirmed OK to run past 30 minutes for this — it's a teaching
+session, not a timed pitch.
 
 ---
 
@@ -297,10 +298,49 @@ Ties straight back to slide 2 — this isn't a hypothetical hiring trend, it's h
 
 ---
 
-## 19. The takeaway + Let's build
+## 19. How I actually build real projects with agentic AI
 
 **On-slide:**
-- Cheat sheet (one page): the core steps, the prompt template, key links, "stuck at X → jump to phase Y"
+- Start with a long prompt describing the ENTIRE problem — often voice-dictated, not typed, so
+  nothing gets left out for the sake of brevity.
+- Feed in whatever already exists: a PRD, user stories, an architecture proposal, sometimes even a
+  frontend someone else on the team (or the client) already built.
+- Before any code gets written, ask for exactly two documents: a **plan** and a **task list**.
+
+*Speaker notes:* This is the direct follow-up to the reveal on the previous slide — "here's literally
+the method I used." Frame it as: the skill that actually matters isn't typing code fast, it's giving an
+agent enough context and enough structure up front that it doesn't need fixing later. Mention explicitly
+that you often dictate the initial prompt by voice — the point is capturing everything you know about the
+problem, not writing elegant prose. This applies to real client/team work, not just today's toy tracks.
+
+---
+
+## 20. PLAN.md + TASKS.md — the two-document system
+
+**On-slide:** (two-column comparison)
+- **PLAN.md** — breaks the project into **phases**, ordered by logical dependency (you can't build
+  phase 3 before phase 2's foundation exists). One paragraph per phase: what it covers, why it comes
+  where it does.
+- **TASKS.md** — the SAME phases, broken into specific, checkbox-able action items: "declare this API,"
+  "build these N endpoints," "wire up this frontend route." Every phase ends with an explicit
+  **definition of done** — what has to be true before moving to the next one.
+- Then: execute **phase by phase** with an agentic coding assistant (e.g. Claude Code), checking off
+  tasks as they complete. Dramatically fewer mistakes than "just start coding."
+
+*Speaker notes:* Draw the connection explicitly: this is the exact same phase-based, dependency-ordered
+thinking as today's `phase_00` → `phase_04` boilerplate, just scaled up to real, large projects. The
+reason this works isn't magic — it's that the agent always knows which phase it's in, what "done" means
+for that phase, and it never has to hold the entire project in its head at once. Encourage them to try
+this on their own next project, even a class assignment: describe the whole problem, ask for a PLAN.md
+and a TASKS.md before writing a line of code, then work through it phase by phase.
+
+---
+
+## 21. The takeaway + Let's build
+
+**On-slide:**
+- Cheat sheet (one page): the core steps, the prompt template, key links, "stuck at X → jump to phase Y,"
+  and the PLAN.md/TASKS.md workflow from the last two slides
 - `template/new_agent_template.py` — reusable scaffold for your next agent project, after today
 - **Let's build.**
 
@@ -315,6 +355,8 @@ on a second screen/phone while building, not something to read now.
 - Slide 2 stats: added, sourced (see slide 2's source list) — flag if you'd rather cite different/primary
   reports instead of the aggregator sites the search turned up.
 - Slide 1: name and affiliation filled in.
-- New slide 18 added: reveal that this workshop's materials were built by an AI agent.
+- Slide 18 added: reveal that this workshop's materials were built by an AI agent.
+- Slides 19–20 added: the real-world PLAN.md/TASKS.md workflow for using agentic AI on actual projects,
+  requested as a follow-on from the slide 18 reveal. Deck is now 21 slides.
 
 Next: once you confirm this reads right, this becomes the actual .pptx via the pptx skill.
