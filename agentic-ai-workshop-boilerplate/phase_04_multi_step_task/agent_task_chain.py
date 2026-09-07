@@ -79,6 +79,7 @@ def record_finding(reading: str, verdict: str) -> str:
 llm = ChatGroq(
     model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
+    max_tokens=512,  # keep well under Groq free-tier output-tokens-per-minute limits
 )
 
 tools = [get_next_sensor_reading, record_finding]
@@ -86,7 +87,7 @@ llm_with_tools = llm.bind_tools(tools)
 tools_by_name = {t.name: t for t in tools}
 
 
-def run_agent_until_done(goal: str, max_iterations: int = 10) -> str:
+def run_agent_until_done(goal: str, max_iterations: int = 15) -> str:
     """Loops the agent through as many tool-calling rounds as it needs,
     stopping when the LLM answers in plain text instead of requesting a
     tool -- i.e. when IT decides the goal is complete."""

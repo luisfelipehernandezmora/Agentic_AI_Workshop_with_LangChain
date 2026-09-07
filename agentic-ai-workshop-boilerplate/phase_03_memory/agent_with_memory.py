@@ -48,6 +48,7 @@ def get_word_count(text: str) -> int:
 llm = ChatGroq(
     model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
+    max_tokens=512,  # keep well under Groq free-tier output-tokens-per-minute limits
 )
 
 tools = [get_word_count]
