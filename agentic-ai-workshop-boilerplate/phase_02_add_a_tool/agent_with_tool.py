@@ -56,9 +56,9 @@ def get_word_count(text: str) -> int:
 # you need for this workshop -- mocked data is the whole point.
 # -----------------------------------------------------------------------
 MOCK_STUDENT_RECORDS = {
-    "alice": {"program": "Robotics & AI", "year": 1},
-    "bilal": {"program": "Cybersecurity", "year": 3},
-    "chen": {"program": "MTech", "year": 1},
+    "kumar": {"program": "Robotics & AI", "year": 1},
+    "anjali": {"program": "Cybersecurity", "year": 3},
+    "priya": {"program": "MTech", "year": 1},
 }
 
 
@@ -81,6 +81,7 @@ def lookup_student(name: str) -> str:
 llm = ChatGroq(
     model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,
+    max_tokens=512,  # keep well under Groq free-tier output-tokens-per-minute limits
 )
 
 tools = [get_word_count, lookup_student]  # <-- this is the whole "add a tool" pattern
@@ -118,9 +119,14 @@ def run_agent(user_input: str) -> str:
 
 
 if __name__ == "__main__":
-    # This question needs the NEW tool -- watch the agent pick it correctly
-    # even though it now has two tools to choose from.
-    run_agent("What program is bilal in, and what year?")
+    # Case 1: needs the NEW tool -- watch the agent pick it correctly even
+    # though it now has two tools to choose from.
+    run_agent("What program is kumar in, and what year?")
 
-    # Try this one too -- it needs the OLD tool instead:
-    # run_agent("How many words are in: Groq makes inference very fast?")
+    # Case 2: needs the OLD tool instead (from phase_01) -- proves the same
+    # agent can choose between multiple tools, not just use whichever is newest.
+    run_agent("How many words are in: Groq makes inference very fast?")
+
+    # Case 3: needs NO tool at all -- a plain math question the LLM can just
+    # answer, so `ai_message.tool_calls` comes back empty on the first call.
+    run_agent("What is 17 times 6?")

@@ -13,7 +13,7 @@ you can see the loop with nothing else going on:
 
     1. We send the LLM a question.
     2. The LLM decides: "I need to call a tool" OR "I can just answer."
-    3. If it wants a tool, WE (the Python code) actually run that function --
+    3. If it wants a tool, the Python code actually run that function --
        the LLM cannot execute code itself, it can only ASK for a function
        to be run, with what arguments.
     4. We hand the tool's result back to the LLM.
@@ -79,6 +79,7 @@ def get_word_count(text: str) -> int:
 llm = ChatGroq(
     model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
     temperature=0,  # 0 = consistent/predictable answers, good for demos and debugging
+    max_tokens=512,  # keep well under Groq free-tier output-tokens-per-minute limits
 )
 
 tools = [get_word_count]
@@ -135,7 +136,11 @@ def run_agent(user_input: str) -> str:
 
 
 if __name__ == "__main__":
-    # Try changing this question! Ask something that clearly doesn't need
-    # the tool (e.g. "What is the capital of France?") and watch the
-    # agent skip the tool call entirely.
+    # Case 1: the question needs the tool -- watch the agent call
+    # get_word_count before it can answer.
     run_agent("How many words are in the sentence: The quick brown fox jumps over the lazy dog?")
+
+    # Case 2: the question does NOT need the tool -- the LLM already knows
+    # the answer, so `ai_message.tool_calls` comes back empty and it
+    # answers directly, with no tool call printed above the final answer.
+    run_agent("What is the capital of France?")
