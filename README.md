@@ -100,3 +100,45 @@ instead of a finished example.
 Common Groq/setup issues (invalid key, rate limits, retired models,
 `ModuleNotFoundError`, tool-calling not triggering) are covered in the
 [boilerplate README's Troubleshooting section](agentic-ai-workshop-boilerplate/README.md#4-troubleshooting-common-groq-key-issues).
+
+## 6. Going to production: libraries worth knowing
+
+This workshop hand-rolls a simple agent loop so you understand what's
+actually happening under the hood. Once you get it, here are established,
+production-grade libraries and tools that solve the same problems (and
+more) so you don't have to build them yourself:
+
+**Agent frameworks & orchestration**
+- [LangChain](https://www.langchain.com/) -- the library this workshop is built on; chains, tools, retrieval, and integrations for almost every LLM provider
+- [LangGraph](https://www.langchain.com/langgraph) -- stateful, graph-based orchestration for multi-step and multi-agent workflows
+- [CrewAI](https://www.crewai.com/) -- role-based multi-agent orchestration (great fit for the "Study Group" style track)
+- [Microsoft AutoGen](https://microsoft.github.io/autogen/) -- multi-agent conversation framework from Microsoft Research
+- [Claude Agent SDK](https://docs.claude.com/en/api/agent-sdk/overview) -- Anthropic's SDK for building custom agents on top of Claude
+- [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) -- OpenAI's lightweight framework for agentic apps
+
+**Retrieval & knowledge**
+- [LlamaIndex](https://www.llamaindex.ai/) -- data framework for connecting LLMs to your own documents/databases (RAG)
+- [Haystack](https://haystack.deepset.ai/) -- production RAG and search pipelines
+
+**Reliability, structure & guardrails**
+- [Instructor](https://python.useinstructor.com/) -- get structured, validated output (Pydantic models) from any LLM
+- [Guardrails AI](https://www.guardrailsai.com/) -- input/output validation and safety rails for LLM apps
+- [LiteLLM](https://www.litellm.ai/) -- one API to call 100+ LLM providers (swap Groq/OpenAI/Anthropic/etc. without changing code)
+
+**Observability & evaluation**
+- [LangSmith](https://www.langchain.com/langsmith) -- tracing, debugging, and evaluation for LLM apps
+- [Langfuse](https://langfuse.com/) -- open-source LLM observability and analytics
+
+**Model access**
+- [Groq](https://groq.com/) -- the free, fast inference API used in this workshop
+- [Ollama](https://ollama.com/) -- run open-source models locally, no API key needed
+
+## License
+
+This repository is licensed under [CC BY 4.0](LICENSE) -- you're free to
+use, adapt, and reuse everything here (including for your own courses or
+commercial projects), as long as you credit the original author and link
+back to this repo.
+
+If this material helped you, please consider giving the repo a star --
+it's the easiest way to support the project and helps other learners find it.
