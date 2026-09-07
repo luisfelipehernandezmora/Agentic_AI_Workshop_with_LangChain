@@ -1,4 +1,4 @@
-# Agentic AI Workshop @ Amrita
+# Agentic AI Workshop
 
 A hands-on workshop that takes you from zero to a working AI agent in about
 an hour, using Python, LangChain, and [Groq](https://groq.com) (a free,
